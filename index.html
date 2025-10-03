@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Complete the Missing Word</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    direction: rtl;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  h1 {
+    margin-bottom: 10px;
+  }
+  #english-sentence {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 15px;
+  }
+  #hebrew-sentence {
+    font-size: 24px;
+    margin-bottom: 20px;
+    min-height: 40px;
+    letter-spacing: 1.5px;
+  }
+  #answer-input {
+    font-size: 18px;
+    padding: 10px;
+    width: 70%;
+    max-width: 350px;
+    border: 2px solid #5e17eb;
+    border-radius: 6px;
+    outline: none;
+  }
+  #answer-input:focus {
+    border-color: #8a47ff;
+  }
+  .image-container img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #feedback {
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
+    min-height: 24px;
+  }
+  #restart-btn {
+    margin-top: 25px;
+    padding: 12px 25px;
+    font-size: 18px;
+    background-color: #5e17eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: none;
+  }
+  #restart-btn:hover {
+    background-color: #4712b2;
+  }
+  .underline {
+    border-bottom: 2px solid #5e17eb;
+    padding: 0 6px;
+    margin: 0 4px;
+  }
+  #recordings-container {
+    margin-top: 25px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Complete the Missing Word</h1>
+  <div id="english-sentence"></div>
+  <div id="hebrew-sentence"></div>
+  <input type="text" id="answer-input" dir="ltr" placeholder="Type the missing word here" autocomplete="off" />
+  <div id="feedback"></div>
+  <div class="image-container">
+    <img id="question-image" src="Pic1.PNG" alt="Image" />
+  </div>
+  <button id="restart-btn">Restart</button>
+  <div id="recordings-container"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    english: "Nitzan, your dad and I thought about taking you on a Bat Mitzvah trip abroad?",
+    hebrewWords: ["ניצן", "אני", "ואבא", "חשבנו", "לקחת", "אותך", "לטיול", "בת מצווה", "בחול"],
+    answers: ["ניצן", "אני", "ואבא", "חשבנו", "לקחת", "אותך", "לטיול", "בת מצווה", "בחול"],
+    image: "Pic1.JPG" 
+  },
+  {
+    english: "I’m already excited! I have a few ideas",
+    hebrewWords: ["אני", "כבר", "מתרגשת", "יש", "לי", "כמה", "רעיונות"],
+    answers: ["אני", "כבר", "מתרגשת", "יש", "לי", "כמה", "רעיונות"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "I was thinking about Iceland. It’s a unique destination with amazing landscapes",
+    hebrewWords: ["אני", "חשבתי", "על", "איסלנד", "זה", "יעד", "מיוחד", "עם", "נופים", "מדהימים"],
+    answers: ["אני", "חשבתי", "על", "איסלנד", "זה", "יעד", "מיוחד", "עם", "נופים", "מדהימים"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "And I was thinking about the United States. They have everything – cities, parks, museums",
+    hebrewWords: ["ואני", "חשבתי", "על", "ארצות הברית", "יש", "שם", "הכל", "נופים", "פארקים", "מוזיאונים"],
+    answers: ["ואני", "חשבתי", "על", "ארצות הברית", "יש", "שם", "הכל", "נופים", "פארקים", "מוזיאונים"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Sounds nice, but I want to fly to a different place",
+    hebrewWords: ["נשמע", "נחמד", "אבל", "אני", "רוצה", "לטוס", "למקום", "אחר"],
+    answers: ["נשמע", "נחמד", "אבל", "אני", "רוצה", "לטוס", "למקום", "אחר"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Where",
+    hebrewWords: ["לאן"],
+    answers: ["לאן"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "I want to go to Australia",
+    hebrewWords: ["אני", "רוצה", "לטוס", "לאוסטרליה"],
+    answers: ["אני", "רוצה", "לטוס", "לאוסטרליה"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Australia? That’s really far",
+    hebrewWords: ["אוסטרליה", "זה", "רחוק", "מאוד"],
+    answers: ["אוסטרליה", "זה", "רחוק", "מאוד"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "True, but I’ve always wanted to see the animals there, especially at the famous Australian Zoo",
+    hebrewWords: ["נכון", "אבל", "תמיד", "רציתי", "לראות", "את", "החיות", "שם", "במיוחד", "בגן החיות", "האוסטרלי", "המפורסם"],
+    answers: ["נכון", "אבל", "תמיד", "רציתי", "לראות", "את", "החיות", "שם", "במיוחד", "בגן החיות", "האוסטרלי", "המפורסם"],
+    image: "Pic1.JPG" 
+  },
+  {
+    english: "This is the zoo you showed us on television on one of the channels, right",
+    hebrewWords: ["זה", "הגן", "חיות", "שהראית", "לנו", "באחד", "הערוצים", "בטלוויזיה", "נכון"],
+    answers: ["זה", "הגן", "חיות", "שהראית", "לנו", "באחד", "הערוצים", "בטלוויזיה", "נכון"],
+    image: "Pic1.JPG" 
+  },
+  {
+    english: "Yes, I watched movies about the kangaroos, the koalas, and other rare animals there",
+    hebrewWords: ["כן", "ראיתי", "סרטים", "על", "הקנגורו", "הקואלות", "ועוד", "חיות", "נדירות", "שם"],
+    answers: ["כן", "ראיתי", "סרטים", "על", "הקנגורו", "הקואלות", "ועוד", "חיות", "נדירות", "שם"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "It’s my dream to be there",
+    hebrewWords: ["זה", "החלום", "שלי", "להיות", "שם"],
+    answers: ["זה", "החלום", "שלי", "להיות", "שם"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "That sounds special, but it’s a very long flight; it will be difficult for us",
+    hebrewWords: ["זה", "נשמע", "מיוחד", "אבל", "זו", "טיסה", "ארוכה", "מאוד", "זה", "יהיה", "לנו", "קשה"],
+    answers: ["זה", "נשמע", "מיוחד", "אבל", "זו", "טיסה", "ארוכה", "מאוד", "זה", "יהיה", "לנו", "קשה"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "A Bat Mitzvah is a once-in-a-lifetime event, Yaniv; we’ll make an effort if that’s what she wants",
+    hebrewWords: ["בת מצווה", "זה", "אירוע", "של", "פעם", "בחיים", "יניב", "נעשה", "מאמץ", "אם", "זה", "מה", "שהיא", "רוצה"],
+    answers: ["בת מצווה", "זה", "אירוע", "של", "פעם", "בחיים", "יניב", "נעשה", "מאמץ", "אם", "זה", "מה", "שהיא", "רוצה"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Yes, please. It’s my dream to fly there",
+    hebrewWords: ["כן", "בבקשה", "זה", "החלום", "שלי", "לטוס", "לשם"],
+    answers: ["כן", "בבקשה", "זה", "החלום", "שלי", "לטוס", "לשם"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Okay, if that’s the case, I’ll start checking and planning our trip to Australia",
+    hebrewWords: ["טוב", "אם", "זה", "ככה", "אז", "אני", "מתחיל", "לבדוק", "ולתכנן", "את", "הטיול", "לאוסטרליה"],
+    answers: ["טוב", "אם", "זה", "ככה", "אז", "אני", "מתחיל", "לבדוק", "ולתכנן", "את", "הטיול", "לאוסטרליה"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Yay! How fun, thank you Mom and Dad",
+    hebrewWords: ["יש", "איזה", "כיף", "תודה", "אמא", "ואבא"],
+    answers: ["יש", "איזה", "כיף", "תודה", "אמא", "ואבא"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "I know you love watching kangaroos, just remember that these animals are dangerous",
+    hebrewWords: ["אני", "יודעת", "שאת", "אוהבת", "לצפות", "בקנגורו", "רק", "תזכרי", "שהחיות", "האלה", "מסוכנות"],
+    answers: ["אני", "יודעת", "שאת", "אוהבת", "לצפות", "בקנגורו", "רק", "תזכרי", "שהחיות", "האלה", "מסוכנות"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "I don’t know if you’ll be able to take pictures with them ",
+    hebrewWords: ["אני", "לא", "יודעת", "אם", "תוכלי", "להצטלם", "איתם"],
+    answers: ["אני", "לא", "יודעת", "אם", "תוכלי", "להצטלם", "איתם"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Maybe we’ll get to see them from a distance, they’ll explain it to us there",
+    hebrewWords: ["אולי", "ייצא", "לנו", "לראות", "אותם", "מרחוק", "יסבירו", "לנו", "כבר", "שם"],
+    answers: ["אולי", "ייצא", "לנו", "לראות", "אותם", "מרחוק", "יסבירו", "לנו", "כבר", "שם"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Yes, we’ll ask the guides when we’re there and follow their instructions",
+    hebrewWords: ["כן", "נישאל", "את", "המדריכים", "כשנהיה", "שם", "ונישמע", "להוראות", "שלהם"],
+    answers: ["כן", "נישאל", "את", "המדריכים", "כשנהיה", "שם", "ונישמע", "להוראות", "שלהם"],
+    image: "Pic1.JPG"
+  },
+
+  // הוסיפי עוד משפטים לפי הצורך
+];
+
+let currentQuestionIndex = 0;
+let currentWordIndex = 0;
+
+const englishSentenceEl = document.getElementById("english-sentence");
+const hebrewSentenceEl = document.getElementById("hebrew-sentence");
+const answerInput = document.getElementById("answer-input");
+const feedbackEl = document.getElementById("feedback");
+const questionImage = document.getElementById("question-image");
+const restartBtn = document.getElementById("restart-btn");
+const recordingsContainer = document.getElementById("recordings-container");
+
+let mediaRecorder;
+let recordedChunks = [];
+
+// מציג את המשפט עם קו תחתון במקום המילה שיש להקליד
+function renderSentence() {
+  const question = questions[currentQuestionIndex];
+  englishSentenceEl.textContent = question.english;
+
+ const words = question.hebrewWords.map((word, i) => {
+  if (i === currentWordIndex) {
+    return `<span class="underline">____</span>`; // ללא קווים
+  } else {
+    return word;
+  }
+}); 
+
+  hebrewSentenceEl.innerHTML = words.join(" ");
+  questionImage.src = question.image;
+  feedbackEl.textContent = "";
+  answerInput.value = "";
+  answerInput.focus();
+  recordingsContainer.innerHTML = ""; // מנקה הקלטות קודמות
+}
+
+// קורא את המשפט בקול בעברית, ואז מפעיל הקלטה
+function speakSentence(sentence) {
+  return new Promise((resolve) => {
+    const utterance = new SpeechSynthesisUtterance(sentence);
+    utterance.lang = 'he-IL';
+    speechSynthesis.speak(utterance);
+    utterance.onend = () => {
+      resolve();
+    };
+  });
+}
+
+// מפעיל הקלטה של הקול
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = e => {
+      if(e.data.size > 0) {
+        recordedChunks.push(e.data);
+      }
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const audioURL = URL.createObjectURL(blob);
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = audioURL;
+      audio.style.marginTop = "10px";
+      recordingsContainer.appendChild(audio);
+    };
+
+    mediaRecorder.start();
+
+    // הקלטה ל-9 שניות, אפשר לשנות
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 9000);
+  } catch(err) {
+    console.error('Error accessing microphone:', err);
+  }
+}
+
+function checkAnswer() {
+  const userAnswer = answerInput.value.trim();
+  const correctAnswer = questions[currentQuestionIndex].answers[currentWordIndex];
+
+  if(userAnswer === correctAnswer) {
+    feedbackEl.style.color = "green";
+    feedbackEl.textContent = "Correct!";
+
+    currentWordIndex++;
+
+    if(currentWordIndex >= questions[currentQuestionIndex].answers.length){
+      // משפט הושלם - קריינות + הקלטת המשתמש
+      const fullSentence = questions[currentQuestionIndex].hebrewWords.join(" ");
+      answerInput.disabled = true; // חוסם הקלדה בזמן קריינות והקלטה
+
+      speakSentence(fullSentence).then(() => {
+        return startRecording();
+      }).then(() => {
+        answerInput.disabled = false;
+        currentQuestionIndex++;
+        currentWordIndex = 0;
+
+        if(currentQuestionIndex >= questions.length){
+          englishSentenceEl.textContent = "Great job! You've finished all the sentences!";
+          hebrewSentenceEl.textContent = "";
+          questionImage.style.display = "none";
+          answerInput.style.display = "none";
+          feedbackEl.textContent = "";
+          restartBtn.style.display = "inline-block";
+          return;
+        }
+        renderSentence();
+      });
+
+    } else {
+      renderSentence();
+    }
+
+  } else {
+    feedbackEl.style.color = "red";
+    feedbackEl.textContent = "Type the word";
+  }
+}
+
+answerInput.addEventListener("input", function(){
+  checkAnswer();
+});
+
+restartBtn.addEventListener("click", () => {
+  currentQuestionIndex = 0;
+  currentWordIndex = 0;
+  questionImage.style.display = "block";
+  answerInput.style.display = "inline-block";
+  restartBtn.style.display = "none";
+  renderSentence();
+});
+
+renderSentence();
+</script>
+</body>
+</html>
