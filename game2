@@ -1,1 +1,387 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Complete the Missing Word</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    direction: rtl;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  h1 {
+    margin-bottom: 10px;
+  }
+  #english-sentence {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 15px;
+  }
+  #hebrew-sentence {
+    font-size: 24px;
+    margin-bottom: 20px;
+    min-height: 40px;
+    letter-spacing: 1.5px;
+  }
+  #answer-input {
+    font-size: 18px;
+    padding: 10px;
+    width: 70%;
+    max-width: 350px;
+    border: 2px solid #5e17eb;
+    border-radius: 6px;
+    outline: none;
+  }
+  #answer-input:focus {
+    border-color: #8a47ff;
+  }
+  .image-container img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #feedback {
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
+    min-height: 24px;
+  }
+  #restart-btn {
+    margin-top: 25px;
+    padding: 12px 25px;
+    font-size: 18px;
+    background-color: #5e17eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: none;
+  }
+  #restart-btn:hover {
+    background-color: #4712b2;
+  }
+  .underline {
+    border-bottom: 2px solid #5e17eb;
+    padding: 0 6px;
+    margin: 0 4px;
+  }
+  #recordings-container {
+    margin-top: 25px;
+  }
+</style>
+</head>
+<body>
 
+<div class="container">
+  <h1>Complete the Missing Word</h1>
+  <div id="english-sentence"></div>
+  <div id="hebrew-sentence"></div>
+  <input type="text" id="answer-input" dir="ltr" placeholder="Type the missing word here" autocomplete="off" />
+  <div id="feedback"></div>
+  <div class="image-container">
+    <img id="question-image" src="Pic1.PNG" alt="Image" />
+  </div>
+  <button id="restart-btn">Restart</button>
+  <div id="recordings-container"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    english: "Did you like the movie",
+    hebrewWords: ["אָהַבְתֶּם", "אֶת", "הַסֶּרֶט"],
+    answers: ["אהבתם", "את", "הסרט"],
+    image: "Pic1.JPG" 
+  },
+  {
+    english: "Yes! It was so fascinating",
+    hebrewWords: ["כֵּן", "זֶה", "הָיָה", "כָּל כָּךְ", "מְרַתֵּק"],
+    answers: ["כן", "זה", "היה", "כל כך", "מרתק"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "I liked the alien spaceships",
+    hebrewWords: ["אָהַבְתִּי", "אֶת", "חֲלָלִיּוֹת", "הַחַיְיזָרִים"],
+    answers: ["אהבתי", "את", "חלליות", "החייזרים"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Your mom thinks aliens don’t exist",
+    hebrewWords: ["אִמָּא", "שֶׁלָּכֶם", "חוֹשֶׁבֶת", "שֶׁאֵין", "דָּבָר", "כָּזֶה", "חַיְיזָרִים"],
+    answers: ["אמא", "שלכם", "חושבת", "שאין", "דבר", "כזה", "חייזרים"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Really? I started watching it on the History Channel",
+    hebrewWords: ["בֶּאֱמֶת", "אֲנִי", "הִתְחַלְתִּי", "לִצְפּוֹת", "בְּעָרוּץ", "הַהִיסְטוֹרְיָה"],
+    answers: ["באמת", "אני", "התחלתי", "לצפות", "בערוץ", "ההיסטוריה"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "They showed places where people have seen aliens",
+    hebrewWords: ["הֵם", "הִרְאוּ", "מְקוֹמוֹת", "שֶׁאֲנָשִׁים", "רָאוּ", "שָׁם", "חַיְיזָרִים"],
+    answers: ["הם", "הראו", "מקומות", "שאנשים", "ראו", "שם", "חייזרים"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Like Mount Shasta and Mount Olympus",
+    hebrewWords: ["כְּמוֹ", "הַר", "שַׁאסְטָה", "וְהַר", "הָאוֹלִימְפּוּס"],
+    answers: ["כמו", "הר", "שאסטה", "והר", "האולימפוס"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "I’ve heard from friends about the Andes mountains",
+    hebrewWords: ["שָׁמַעְתִּי", "מֵחֲבֵרִים", "עַל", "הֲרֵי", "הָאַנְדִּים"],
+    answers: ["שמעתי", "מחברים", "על", "הרי", "האנדים"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "They said on TV that there are also stories about aliens there",
+    hebrewWords: ["הֵם", "אָמְרוּ", "בַּטֵּלֶוִויזְיָה", "שֶׁיֵּשׁ", "שָׁם", "גַּם", "סִפּוּרִים", "עַל", "חַיְיזָרִים"],
+    answers: ["הם", "אמרו", "בטלוויזיה", "שיש", "שם", "גם", "סיפורים", "על", "חייזרים"],
+    image: "Pic1.JPG" 
+  },
+  {
+    english: "Some people believe it, and some don’t",
+    hebrewWords: ["יֵשׁ", "אֲנָשִׁים", "שֶׁמַּאֲמִינִים", "וְיֵשׁ", "שֶׁלֹּא"],
+    answers: ["יש", "אנשים", "שמאמינים", "ויש", "שלא"],
+    image: "Pic1.JPG"
+  },
+  {
+    english: "Personally, I believe that we are not alone in the universe",
+    hebrewWords: ["אֲנִי", "אִישִׁית", "מַאֲמִין", "שֶׁאֲנַחְנוּ", "לֹא", "לְבַד", "בַּיְּקוּם"],
+    answers: ["אני", "אישית", "מאמין", "שאנחנו", "לא", "לבד", "ביקום"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "On the History Channel, they talked about a gate to another universe",
+    hebrewWords: ["בְּעָרוּץ", "הַהִיסְטוֹרְיָה", "דִּבְּרוּ", "עַל", "שַׁעַר", "לְעוֹלָם", "אַחֵר"],
+    answers: ["בערוץ", "ההיסטוריה", "דיברו", "על", "שער", "ליקום", "אחר"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "People are far from discovering such a gate",
+    hebrewWords: ["בְּנֵי", "אָדָם", "רְחוֹקִים", "מִלִּיצוֹר", "שַׁעַר", "כָּזֶה"],
+    answers: ["בני אדם", "רחוקים", "מליצור", "שער", "כזה"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "But it’s a very interesting topic",
+    hebrewWords: ["אֲבָל", "זֶה", "נוֹשֵׂא", "מְאוֹד", "מְעַנְיֵין"],
+    answers: ["אבל", "זה", "נושא", "מאוד", "מעניין"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "I wish more countries would research this",
+    hebrewWords: ["הַלְוַואי", "שֶׁיּוֹתֵר", "מְדִינוֹת", "הָיוּ", "חוֹקְרוֹת", "אֶת", "זֶה"],
+    answers: ["הלוואי", "שיותר", "מדינות", "היו", "חוקרות", "את", "זה"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "Dad, if aliens came, what would you do",
+    hebrewWords: ["אַבָּא", "אִם", "חַיְיזָרִים", "יָבוֹאוּ", "מָה", "תַּעֲשֶׂה"],
+    answers: ["אבא", "אם", "חייזרים", "יבואו", "מה", "תעשה"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "I would invite them for coffee",
+    hebrewWords: ["הָיִיתִי", "מַזְמִין", "אוֹתָם", "לְקָפֶה"],
+    answers: ["הייתי", "מזמין", "אותם", "לקפה"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "And I would ask for a ride in their spaceship",
+    hebrewWords: ["וַאֲנִי", "הָיִיתִי", "מְבַקֶּשֶׁת", "סִיבוּב", "בַּחֲלָלִית", "שֶׁלָּהֶם"],
+    answers: ["ואני", "הייתי", "מבקשת", "סיבוב", "בחללית", "שלהם"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "I would simply hide under my bed",
+    hebrewWords: ["אֲנִי", "פָּשׁוּט", "הָיִיתִי", "מִתְחַבֵּא", "מִתַּחַת", "לַמִּטָּה", "שֶׁלִּי"],
+    answers: ["אני", "פשוט", "הייתי", "מתחבא", "מתחת", "למיטה", "שלי"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "I love movies like this about aliens",
+    hebrewWords: ["אֲנִי", "אוֹהֶבֶת", "סְרָטִים", "כָּאֵלֶּה", "עַל", "חַיְיזָרִים"],
+    answers: ["אני", "אוהבת", "סרטים", "כאלה", "על", "חייזרים"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "But animated movies are fun too",
+    hebrewWords: ["אֲבָל", "גַּם", "סִרְטֵי", "אֲנִימַצְיָה", "זֶה", "כֵּיף"],
+    answers: ["אבל", "גם", "סרטי", "אנימציה", "זה", "כיף"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "Yes, sometimes it’s nice to watch animated movies",
+    hebrewWords: ["כֵּן", "לִפְעָמִים", "נֶחְמָד", "לִרְאוֹת", "סְרָטִים", "מְצוּיָּירִים"],
+    answers: ["כן", "לפעמים", "נחמד", "לראות", "סרטים", "מצויירים"],
+    image: "Pic1.JPG"
+  },
+    {
+    english: "I’m glad you enjoyed the movie",
+    hebrewWords: ["אֲנִי", "שָׂמֵחַ", "שֶׁנֶּהֱנֵיתֶם", "מֵהַסֶּרֶט"],
+    answers: ["אני", "שמח", "שנהניתם", "מהסרט"],
+    image: "Pic1.JPG"
+  },
+  // הוסיפי עוד משפטים לפי הצורך
+];
+
+let currentQuestionIndex = 0;
+let currentWordIndex = 0;
+
+const englishSentenceEl = document.getElementById("english-sentence");
+const hebrewSentenceEl = document.getElementById("hebrew-sentence");
+const answerInput = document.getElementById("answer-input");
+const feedbackEl = document.getElementById("feedback");
+const questionImage = document.getElementById("question-image");
+const restartBtn = document.getElementById("restart-btn");
+const recordingsContainer = document.getElementById("recordings-container");
+
+let mediaRecorder;
+let recordedChunks = [];
+
+// מציג את המשפט עם קו תחתון במקום המילה שיש להקליד
+function renderSentence() {
+  const question = questions[currentQuestionIndex];
+  englishSentenceEl.textContent = question.english;
+
+ const words = question.hebrewWords.map((word, i) => {
+  if (i === currentWordIndex) {
+    return `<span class="underline">____</span>`; // ללא קווים
+  } else {
+    return word;
+  }
+}); 
+
+  hebrewSentenceEl.innerHTML = words.join(" ");
+  questionImage.src = question.image;
+  feedbackEl.textContent = "";
+  answerInput.value = "";
+  answerInput.focus();
+  recordingsContainer.innerHTML = ""; // מנקה הקלטות קודמות
+}
+
+// קורא את המשפט בקול בעברית, ואז מפעיל הקלטה
+function speakSentence(sentence) {
+  return new Promise((resolve) => {
+    const utterance = new SpeechSynthesisUtterance(sentence);
+    utterance.lang = 'he-IL';
+    speechSynthesis.speak(utterance);
+    utterance.onend = () => {
+      resolve();
+    };
+  });
+}
+
+// מפעיל הקלטה של הקול
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = e => {
+      if(e.data.size > 0) {
+        recordedChunks.push(e.data);
+      }
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const audioURL = URL.createObjectURL(blob);
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = audioURL;
+      audio.style.marginTop = "10px";
+      recordingsContainer.appendChild(audio);
+    };
+
+    mediaRecorder.start();
+
+    // הקלטה ל-9 שניות, אפשר לשנות
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 9000);
+  } catch(err) {
+    console.error('Error accessing microphone:', err);
+  }
+}
+
+function checkAnswer() {
+  const userAnswer = answerInput.value.trim();
+  const correctAnswer = questions[currentQuestionIndex].answers[currentWordIndex];
+
+  if(userAnswer === correctAnswer) {
+    feedbackEl.style.color = "green";
+    feedbackEl.textContent = "Correct!";
+
+    currentWordIndex++;
+
+    if(currentWordIndex >= questions[currentQuestionIndex].answers.length){
+      // משפט הושלם - קריינות + הקלטת המשתמש
+      const fullSentence = questions[currentQuestionIndex].hebrewWords.join(" ");
+      answerInput.disabled = true; // חוסם הקלדה בזמן קריינות והקלטה
+
+      speakSentence(fullSentence).then(() => {
+        return startRecording();
+      }).then(() => {
+        answerInput.disabled = false;
+        currentQuestionIndex++;
+        currentWordIndex = 0;
+
+        if(currentQuestionIndex >= questions.length){
+          englishSentenceEl.textContent = "Great job! You've finished all the sentences!";
+          hebrewSentenceEl.textContent = "";
+          questionImage.style.display = "none";
+          answerInput.style.display = "none";
+          feedbackEl.textContent = "";
+          restartBtn.style.display = "inline-block";
+          return;
+        }
+        renderSentence();
+      });
+
+    } else {
+      renderSentence();
+    }
+
+  } else {
+    feedbackEl.style.color = "red";
+    feedbackEl.textContent = "Type the word";
+  }
+}
+
+answerInput.addEventListener("input", function(){
+  checkAnswer();
+});
+
+restartBtn.addEventListener("click", () => {
+  currentQuestionIndex = 0;
+  currentWordIndex = 0;
+  questionImage.style.display = "block";
+  answerInput.style.display = "inline-block";
+  restartBtn.style.display = "none";
+  renderSentence();
+});
+
+renderSentence();
+</script>
+</body>
+</html>
